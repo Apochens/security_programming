@@ -1,5 +1,13 @@
+use std::{io, io::{stdin, Write}};
 use num::{Integer, One, ToPrimitive, Zero};
 use num_primes::{RandBigInt, BigUint, Generator, Verification};
+
+fn end(info: String) {
+    print!("[ Info ] {}", info);
+    io::stdout().flush().unwrap();
+    let mut bf = String::new();
+    stdin().read_line(&mut bf).unwrap();
+}
 
 fn rewrite(candidate: &BigUint) -> (BigUint, BigUint) {
     let mut s = BigUint::zero();
@@ -18,6 +26,7 @@ fn rewrite(candidate: &BigUint) -> (BigUint, BigUint) {
 
 /// The Miller-Rabin prime testing
 fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
+    println!("---------------------------------------------------------\n[ Miller-Rabin ] Start testing: {}. ", candidate);
     let one = BigUint::one();
     let two = &one + &one;
 
@@ -46,6 +55,7 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
 
             /* 4. If r_i = n-1 then pass this testing and goto 1.; or continue the loop； */
             if r == one {
+                println!("[ Miller-Rabin ] Finish testing: Failed.\n---------------------------------------------------------");
                 return false;
             }
             if r == candidate - &one {
@@ -57,11 +67,13 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
         
         /* early_break is false means that testing fails for all r_i, so we return false directly. */
         if early_break == false { 
+            println!("[ Miller-Rabin ] Finish testing: Faild.\n---------------------------------------------------------");
             return false;
         }
         
     }
 
+    println!("[ Miller-Rabin ] Finish testing: Passed.\n---------------------------------------------------------");
     true
 }
 
@@ -75,6 +87,7 @@ fn main() {
 
     if Verification::is_prime(&num) {   // Use Verification to double check
         println!("The 160 bits number passed the Miller-Rabin verifacation is:\n    {}", num);
+        end("Press <Enter> to exit.".to_string())
     } else {
         panic!("Error in generating large prime of 160 bits");
     }
