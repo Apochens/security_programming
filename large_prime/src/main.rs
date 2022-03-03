@@ -78,6 +78,7 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
 }
 
 fn main() {
+    println!("[Large Prime Generation ] Start generating...");
 
     let mut num= Generator::new_uint(160);
 
@@ -86,7 +87,7 @@ fn main() {
     }
 
     if Verification::is_prime(&num) {   // Use Verification to double check
-        println!("The 160 bits number passed the Miller-Rabin verifacation is:\n    {}", num);
+        println!("[Large Prime Generation ] The 160 bits number passed the Miller-Rabin verifacation is:\n    {}", num);
         end("Press <Enter> to exit.".to_string())
     } else {
         panic!("Error in generating large prime of 160 bits");
