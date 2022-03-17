@@ -2,7 +2,7 @@ use std::{io, io::{stdin, Write}};
 use num::{Integer, One, ToPrimitive, Zero};
 use num_primes::{RandBigInt, BigUint, Generator, Verification};
 
-fn end(info: String) {
+fn info(info: String) {
     print!("[ Info ] {}", info);
     io::stdout().flush().unwrap();
     let mut bf = String::new();
@@ -35,18 +35,20 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
     let (t, s) = rewrite(candidate);
     let mut rng = rand::thread_rng();
 
-    for _ in 0..limit {
+    for i in 1..=limit {
 
+        
         /* 1. Get a random number b, 2 <= b <= n-2. */
         let b = rng.gen_biguint_range(&two, &(candidate - &one));
-
+        println!("[Miller-Rabin] Start round {}. b: {}", i, &b);
+        
         /* 2. Compute r_0 = b^t mod n. */
         let mut r = b.modpow(&t, &candidate);
-
+        
         /* 3. If r_0 = 1 or r_0 = n-1, then pass and goto 1.;
             or compute r_(i+1) = r_i ^ 2 mod n from r_1 to r_(s-1) incursively. */
-        if r == one || r == candidate - &one {
-            continue;
+            if r == one || r == candidate - &one {
+                continue;
         }
 
         let mut early_break = false;
@@ -62,7 +64,7 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
                 early_break = true;
                 break;
             }
-
+            
         }
         
         /* early_break is false means that testing fails for all r_i, so we return false directly. */
@@ -70,9 +72,8 @@ fn miller_rabin(candidate: &BigUint, limit: usize) -> bool {
             println!("[ Miller-Rabin ] Finish testing: Faild.\n---------------------------------------------------------");
             return false;
         }
-        
     }
-
+    
     println!("[ Miller-Rabin ] Finish testing: Passed.\n---------------------------------------------------------");
     true
 }
@@ -81,6 +82,7 @@ fn main() {
     println!("[Large Prime Generation ] Start generating...");
 
     let mut num= Generator::new_uint(160);
+    let mut count = 1;
 
     while miller_rabin(&num, 10) != true {
         num = Generator::new_uint(160);
@@ -88,7 +90,7 @@ fn main() {
 
     if Verification::is_prime(&num) {   // Use Verification to double check
         println!("[Large Prime Generation ] The 160 bits number passed the Miller-Rabin verifacation is:\n    {}", num);
-        end("Press <Enter> to exit.".to_string())
+        info("Press <Enter> to exit.".to_string())
     } else {
         panic!("Error in generating large prime of 160 bits");
     }
