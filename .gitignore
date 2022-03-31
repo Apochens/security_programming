@@ -1,3 +1,5 @@
 large_prime/target/
+stream_cipher/out
+data_encryption_standard/out/
 
 *.zip
